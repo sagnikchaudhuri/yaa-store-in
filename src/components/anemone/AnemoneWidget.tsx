@@ -430,13 +430,7 @@ export default function AnemoneWidget() {
           style={{ borderTop: "1px solid oklch(1 0 0 / 0.05)" }}
         >
           <span className="text-[9px]" style={{ color: "oklch(1 0 0 / 0.15)" }}>
-            Anemone · YAA Store · Powered by{" "}
-          </span>
-          <span
-            className="text-[9px] font-bold"
-            style={{ color: "oklch(0.68 0.19 44 / 0.35)" }}
-          >
-            Claude
+            Anemone · YAA Store
           </span>
         </div>
       </div>
