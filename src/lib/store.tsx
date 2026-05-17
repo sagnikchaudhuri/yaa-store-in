@@ -127,11 +127,10 @@ const SEED_FRANCHISES: Franchise[] = [
 ];
 
 const SEED_ADMINS: AdminMember[] = [
-  { id: "a1", name: "Yusuf A.",   email: "yusuf@yaa-store.com",   role: "admin",       status: "active",   joinedAt: "Jan 2024", lastSeen: "Just now",  avatar: "Y" },
-  { id: "a2", name: "Aisha K.",   email: "aisha@yaa-store.com",   role: "admin",       status: "active",   joinedAt: "Mar 2024", lastSeen: "2h ago",    avatar: "A" },
-  { id: "a3", name: "Rahul M.",   email: "rahul@yaa-store.com",   role: "content",     status: "active",   joinedAt: "Apr 2024", lastSeen: "Yesterday", avatar: "R" },
-  { id: "a4", name: "Sara J.",    email: "sara@yaa-store.com",    role: "support",     status: "active",   joinedAt: "Jun 2024", lastSeen: "3h ago",    avatar: "S" },
-  { id: "a5", name: "Demi O.",    email: "demi@yaa-store.com",    role: "support",     status: "inactive", joinedAt: "Aug 2024", lastSeen: "5d ago",    avatar: "D" },
+  { id: "a1", name: "Koushik",  email: "koushik@yaa-store.com",  role: "admin",   status: "active", joinedAt: "Jan 2024", lastSeen: "Just now",  avatar: "K"  },
+  { id: "a2", name: "Rupankar", email: "rupankar@yaa-store.com", role: "content", status: "active", joinedAt: "Apr 2024", lastSeen: "2h ago",    avatar: "Rp" },
+  { id: "a3", name: "Ritam",    email: "ritam@yaa-store.com",    role: "support", status: "active", joinedAt: "Jun 2024", lastSeen: "Yesterday", avatar: "Ri" },
+  { id: "a4", name: "Ghosh",    email: "ghosh@yaa-store.com",    role: "support", status: "active", joinedAt: "Aug 2024", lastSeen: "3h ago",    avatar: "G"  },
 ];
 
 const SEED_ANEMONE: AnemoneSettings = {
@@ -153,9 +152,9 @@ const SEED_LOG: LogEntry[] = [
   { id: "l3", action: "Ticket resolved",    details: "TKT-004 marked resolved by Admin",            time: "1h ago",   severity: "info"     },
   { id: "l4", action: "Anemone mode",       details: "Mode changed: calm → hype",                   time: "3h ago",   severity: "info"     },
   { id: "l5", action: "Product deleted",    details: "Sasuke Figure (p99) removed from store",      time: "1d ago",   severity: "warning"  },
-  { id: "l6", action: "Admin added",        details: "Demi O. invited as Support Staff",            time: "2d ago",   severity: "info"     },
+  { id: "l6", action: "Admin added",        details: "Ghosh invited as Support Staff",              time: "2d ago",   severity: "info"     },
   { id: "l7", action: "Drop deleted",       details: "Test drop draft removed",                     time: "3d ago",   severity: "warning"  },
-  { id: "l8", action: "Role changed",       details: "Rahul M. promoted from Support → Content",   time: "5d ago",   severity: "info"     },
+  { id: "l8", action: "Role changed",       details: "Rupankar assigned as Content Manager",        time: "5d ago",   severity: "info"     },
 ];
 
 const SEED_LEADS: Lead[] = [
