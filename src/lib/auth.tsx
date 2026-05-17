@@ -56,25 +56,10 @@ export const ROLE_HIERARCHY: Record<AdminRole, number> = {
 };
 
 // ─── Hidden Super Admin ───────────────────────────────────────────
-// Credentials come from .env.local (gitignored) via NEXT_PUBLIC_ vars.
-// They are baked into the client bundle at build time — this is acceptable
-// for an MVP mock-auth setup. Replace with server-side auth before launch.
-//
-// If either env var is empty/unset, the hidden-admin login path is completely
-// disabled and the condition short-circuits without any comparison.
-const HIDDEN_ADMIN_EMAIL    = process.env.NEXT_PUBLIC_ADMIN_EMAIL    ?? "";
-const HIDDEN_ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "";
-
-const HIDDEN_SUPER_ADMIN: AdminMember = {
-  id:       "sa0",
-  name:     "Sagnik",
-  email:    HIDDEN_ADMIN_EMAIL,
-  role:     "super-admin",
-  status:   "active",
-  joinedAt: "Jan 2024",
-  lastSeen: "Just now",
-  avatar:   "S",
-};
+// Credentials are verified server-side via POST /api/auth/super-admin.
+// DEMO_SUPER_ADMIN_EMAIL and DEMO_SUPER_ADMIN_PASSWORD live in .env.local
+// (gitignored) and are never exposed to the browser bundle.
+// Only the sanitised user object (no password) is returned on success.
 
 // ─── Context ───────────────────────────────────────────────────────
 
@@ -86,8 +71,12 @@ interface AuthContextValue {
    * A 3-second hard timeout guarantees it never stays true forever.
    */
   loading: boolean;
-  /** password is required for the hidden Super Admin; demo accounts accept any non-empty string */
-  login: (email: string, password: string, admins: AdminMember[]) => boolean;
+  /**
+   * Async — Super Admin credentials are checked via the server-side API
+   * route so the password never travels through the client bundle.
+   * Demo accounts still accept any non-empty password (MVP behaviour).
+   */
+  login: (email: string, password: string, admins: AdminMember[]) => Promise<boolean>;
   logout: () => void;
   can: (perm: Permission) => boolean;
   /**
@@ -135,21 +124,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // don't get new references on every render, preventing unnecessary
   // re-renders and useEffect re-runs down the tree.
 
-  const login = useCallback((email: string, password: string, admins: AdminMember[]): boolean => {
+  const login = useCallback(async (email: string, password: string, admins: AdminMember[]): Promise<boolean> => {
     const normalized = email.toLowerCase().trim();
 
-    // ── Path 1: Hidden Super Admin ───────────────────────────────
-    // Both email AND password must match the env-var values exactly.
-    // If either env var is unset (empty string), this path is skipped entirely.
-    if (
-      HIDDEN_ADMIN_EMAIL &&
-      HIDDEN_ADMIN_PASSWORD &&
-      normalized === HIDDEN_ADMIN_EMAIL.toLowerCase() &&
-      password  === HIDDEN_ADMIN_PASSWORD
-    ) {
-      setCurrentUser(HIDDEN_SUPER_ADMIN);
-      try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(HIDDEN_SUPER_ADMIN)); } catch { /* private mode */ }
-      return true;
+    // ── Path 1: Hidden Super Admin (server-side check) ───────────
+    // POST to the API route which reads DEMO_SUPER_ADMIN_EMAIL and
+    // DEMO_SUPER_ADMIN_PASSWORD from process.env (server-only).
+    // The password is never sent back to the client.
+    try {
+      const res = await fetch("/api/auth/super-admin", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ email: normalized, password }),
+      });
+      if (res.ok) {
+        const data = await res.json() as { ok: boolean; user?: AdminMember };
+        if (data.ok && data.user) {
+          setCurrentUser(data.user);
+          try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(data.user)); } catch { /* private mode */ }
+          return true;
+        }
+      }
+    } catch {
+      // Network error or API unavailable — fall through to demo accounts.
     }
 
     // ── Path 2: Demo accounts ────────────────────────────────────

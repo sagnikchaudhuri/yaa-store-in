@@ -48,7 +48,7 @@ export default function LoginPage() {
     setLoading(true);
     await new Promise(r => setTimeout(r, 350)); // brief UX delay
 
-    const ok = login(email, password, admins);
+    const ok = await login(email, password, admins);
     setLoading(false);
 
     if (!ok) {
